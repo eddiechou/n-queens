@@ -195,7 +195,40 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var boardSize = this.rows().length;
+      if (minorDiagonalColumnIndexAtFirstRow === (boardSize - 1)) {
+        var numPieces = 0;      
+        //you gotta iterate the bottom half of the matrix
+        //Iterate over each row
+        for (var row = 0; row < boardSize; row++) {
+            numPieces = 0;                        
+            var currentRowIndex = row;
+            //Iterate over each element
+            // debugger;
+            for (var col = boardSize - row - 1; col >= 0 ; col--) {
+              // if (this.rows()[currentRowIndex][col] === 1) {
+              //   numPieces++;
+              // }
+              console.log("Coordinates: " + currentRowIndex + ", " + col);
+              currentRowIndex++;
+            }
+
+            if (numPieces >= 2) {
+              // return true
+            } 
+        }
+        return false;
+      } else {
+        var numPieces = 0;
+        var currentRowIndex = 0;
+        for (var a = minorDiagonalColumnIndexAtFirstRow; a > 0; a--) {
+          if (this.rows()[currentRowIndex][a] === 1) {
+            numPieces++;
+          }
+          currentRowIndex++;
+        }
+        return numPieces >= 2;
+      }
     },
 
     // test if any minor diagonals on this board contain conflicts
