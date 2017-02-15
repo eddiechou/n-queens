@@ -83,7 +83,6 @@
     //Please come back to
     hasRowConflictAt: function(rowIndex) {
       //Iterate through this.attributes which is an array of values
-      debugger;
       var numPieces = 0;
       var currentArray = this.rows()[rowIndex];
       for (var a = 0; a < currentArray.length; a++) {
@@ -140,12 +139,53 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+
+      var boardSize = this.rows().length;
+      if (majorDiagonalColumnIndexAtFirstRow === 0) {
+         var numPieces = 0;      
+        //you gotta iterate the bottom half of the matrix
+        //Iterate over each row
+        for (var row = 0; row < boardSize; row++) {
+            numPieces = 0;                        
+            var currentRowIndex = row;
+            //Iterate over each element
+            // debugger;
+            for (var col = 0; col < boardSize - row ; col++) {
+              if (this.rows()[currentRowIndex][col] === 1) {
+                numPieces++;
+              }
+              currentRowIndex++;
+            }
+
+            if (numPieces >= 2) {
+              return true
+            } 
+        }
+        return false;
+      } else {
+        var numPieces = 0;
+        var currentRowIndex = 0;
+        for (var a = majorDiagonalColumnIndexAtFirstRow; a < boardSize; a++) {
+          if (this.rows()[currentRowIndex][a] === 1) {
+            numPieces++;
+          }
+          currentRowIndex++;
+        }
+        return numPieces >= 2;
+      }
+     
+
     },
 
     // test if any major diagonals on this board contain conflicts
-    hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+    hasAnyMajorDiagonalConflicts: function() {      
+      for (var a = 0; a < this.rows().length; a++) {
+        if (this.hasMajorDiagonalConflictAt(a)) {
+          return true;
+        }
+      } 
+      return false;
+      
     },
 
 
