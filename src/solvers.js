@@ -55,22 +55,20 @@ window.countNRooksSolutions = function(n) {
   function recurserFunction(board, numPieces, thisRow) {
     if (numPieces === n) {
       solutionCount++;
-    }
-
-    if (numPieces > n || thisRow >= n){
       return;
     }
 
+    if (thisRow >= n){
+      return;
+    }
+    // For each column of this row, check if toggle will work
     for (var col = 0; col < n; col++) {
       var copy = jQuery.extend(true, {}, board);
-      if (copy.rows()[thisRow][col] === 1) {  // if there's a piece already, try next one
-        continue;
-      } else {  // else try if it works
-        copy.togglePiece(thisRow, col);
-        if (!copy.hasAnyRooksConflicts()) {
-          recurserFunction(copy, numPieces + 1, thisRow + 1);
-        } 
+      copy.togglePiece(thisRow, col);
+      if (!copy.hasAnyRooksConflicts()) {
+        recurserFunction(copy, numPieces + 1, thisRow + 1);
       }
+      
     }
   }
 
