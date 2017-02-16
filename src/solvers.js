@@ -72,7 +72,7 @@ window.countNRooksSolutions = function(n) {
     }
   }
 
-  recurserFunction(solution, 0, 0);
+  //recurserFunction(solution, 0, 0);
   
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
@@ -80,15 +80,59 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+  var solution = new Board({n: n});
+  
+  function recurserFunction(board, numPieces, thisRow) {
+    if (numPieces === n) {
+      solution = board;
+      return solution;
+    }
+
+    if (thisRow >= n){
+      return;
+    }
+    // For each column of this row, check if toggle will work
+    for (var col = 0; col < n; col++) {
+      var copy = jQuery.extend(true, {}, board);
+      copy.togglePiece(thisRow, col);
+      if (!copy.hasAnyQueensConflicts()) {
+        recurserFunction(copy, numPieces + 1, thisRow + 1);
+      }
+      
+    }
+  }
+
+  recurserFunction(solution, 0, 0);
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution;
+  return solution.rows();
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0; //fixme
+  var solution = new Board({n: n});
+  
+  function recurserFunction(board, numPieces, thisRow) {
+    if (numPieces === n) {
+      solutionCount++;
+    }
+
+    if (thisRow >= n){
+      return;
+    }
+    // For each column of this row, check if toggle will work
+    for (var col = 0; col < n; col++) {
+      var copy = jQuery.extend(true, {}, board);
+      copy.togglePiece(thisRow, col);
+      if (!copy.hasAnyQueensConflicts()) {
+        recurserFunction(copy, numPieces + 1, thisRow + 1);
+      }
+      
+    }
+  }
+
+  recurserFunction(solution, 0, 0);
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
