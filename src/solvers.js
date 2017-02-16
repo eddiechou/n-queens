@@ -52,31 +52,29 @@ window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
   var solution = new Board({n: n});
   
-  function recurserFunction(board, numPieces) {
+  function recurserFunction(board, numPieces, thisRow) {
     if (numPieces === n) {
       solutionCount++;
     }
 
-    if (numPieces > n) {
+    if (numPieces > n || thisRow >= n){
       return;
     }
 
-    for (var row = 0; row < n; row++) {
-      for (var col = 0; col < n; col++) {
-        var copy = jQuery.extend(true, {}, board);
-        if (copy.rows()[row][col] === 1) {  // if there's a piece already, try next one
-          continue;
-        } else {  // else try if it works
-          copy.togglePiece(row, col);
-          if (!copy.hasAnyRooksConflicts()) {
-            recurserFunction(copy, numPieces + 1);
-          }
-        }
+    for (var col = 0; col < n; col++) {
+      var copy = jQuery.extend(true, {}, board);
+      if (copy.rows()[thisRow][col] === 1) {  // if there's a piece already, try next one
+        continue;
+      } else {  // else try if it works
+        copy.togglePiece(thisRow, col);
+        if (!copy.hasAnyRooksConflicts()) {
+          recurserFunction(copy, numPieces + 1, thisRow + 1);
+        } 
       }
-    } 
+    }
   }
- 
-  recurserFunction(solution, 0);
+
+  recurserFunction(solution, 0, 0);
   
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
