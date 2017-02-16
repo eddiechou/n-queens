@@ -87,7 +87,7 @@ window.countNRooksSolutions = function(n) {
 window.findNQueensSolution = function(n) {
   var solution = new Board({n: n});
   
-  var recurserFunction = function(board, numPieces, thisRow) {
+  /*var recurserFunction = function(board, numPieces, thisRow) {
     if (numPieces === n) {
       solution = board;
       return true;
@@ -105,10 +105,30 @@ window.findNQueensSolution = function(n) {
           return true;
         }
       }
-      
+    }
+  };*/
+
+
+  var recurserFunction = function(numPieces, thisRow) {
+    if (numPieces === n) {
+      return true;
+    }
+
+    if (thisRow >= n) {
+      return;
+    }
+    // For each column of this row, check if toggle will work
+    for (var col = 0; col < n; col++) {
+      solution.togglePiece(thisRow, col);
+      if (!solution.hasAnyQueensConflicts()) {
+        if (recurserFunction(numPieces + 1, thisRow + 1)) {
+          return true;
+        }
+      }
+      solution.togglePiece(thisRow, col);
     }
   };
-  recurserFunction(solution, 0, 0);
+  recurserFunction(0, 0 );
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution.rows();
@@ -119,7 +139,8 @@ window.countNQueensSolutions = function(n) {
   var solutionCount = 0;
   var solution = new Board({n: n});
   
-  var recurserFunction = function(board, numPieces, thisRow) {
+  // using copy
+  /*var recurserFunction = function(board, numPieces, thisRow) {
     if (numPieces === n) {
       solutionCount++;
     }
@@ -135,9 +156,30 @@ window.countNQueensSolutions = function(n) {
         recurserFunction(copy, numPieces + 1, thisRow + 1);
       }
     }
-  };
+  };*/
 
-  recurserFunction(solution, 0, 0);
+  // not using copy
+  var recurserFunction = function(numPieces, thisRow) {
+    if (numPieces === n) {
+      solutionCount++;
+      return;
+    }
+
+    if (thisRow >= n) {
+      return;
+    }
+    // For each column of this row, check if toggle will work
+    for (var col = 0; col < n; col++) {
+      solution.togglePiece(thisRow, col);
+      if (!solution.hasAnyQueensConflicts()) {
+        recurserFunction(numPieces + 1, thisRow + 1);
+      }
+      solution.togglePiece(thisRow, col);
+    }
+  };
+  recurserFunction(0, 0);
+
+  //recurserFunction(solution, 0, 0);
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
