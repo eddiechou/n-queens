@@ -18,38 +18,32 @@
 window.findNRooksSolution = function(n) {
   var solution = new Board({n: n});
 
-  function recurser(board, numPieces) {
-    if (numPieces === n) {
-
-      return board;
+  function recurser(numPieces, thisRow) {
+    if (numPieces === n || thisRow == n) {
+      return true;
     } 
     //Iterate through each option;
-    for (var row = 0; row < n; row++) {
-      for (var col = 0; col < n; col++) {
-        //Toggle and Check if valid
-        //If there is currently a piece at (row, col)
-        if (solution.rows()[row][col] === 1) {
-          continue;
-        } else {
-          solution.togglePiece(row, col);
-          if (solution.hasAnyRooksConflicts()) {
-            solution.togglePiece(row, col); //untoggle it            
-          } else { //no conflicts
-            recurser(solution, numPieces + 1);
-          }
+    for (var col = 0; col < n; col++) {
+      //Toggle and Check if valid
+      //If there is currently a piece at (row, col)
+      solution.togglePiece(thisRow, col);
+      if (solution.hasAnyRooksConflicts()) {
+        solution.togglePiece(thisRow, col); //untoggle it            
+      } else { //no conflicts
+        if (recurser(numPieces + 1, thisRow + 1)) {
+          return;
         }
       }
     }
-
   }
-  recurser(solution, 0);
+  recurser(0, 0);
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution.rows();
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = 0;
+  var solutionCount;
   var solution = new Board({n: n});
   
   function recurserFunction(board, numPieces, thisRow) {
@@ -68,12 +62,22 @@ window.countNRooksSolutions = function(n) {
       if (!copy.hasAnyRooksConflicts()) {
         recurserFunction(copy, numPieces + 1, thisRow + 1);
       }
-      
     }
   }
 
-  //recurserFunction(solution, 0, 0);
-  
+  // recurserFunction(solution, 0, 0);
+
+  // Factorial using memoization + recursion
+  var factorials = [];
+  function factorial (n) {
+    if (n == 0 || n == 1)
+      return 1;
+    if (factorials[n] > 0)
+      return factorials[n];
+    return factorials[n] = factorial(n-1) * n;
+  };
+
+  var solutionCount = factorial(n);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
@@ -85,7 +89,7 @@ window.findNQueensSolution = function(n) {
   function recurserFunction(board, numPieces, thisRow) {
     if (numPieces === n) {
       solution = board;
-      return solution;
+      return true;
     }
 
     if (thisRow >= n){
@@ -96,7 +100,9 @@ window.findNQueensSolution = function(n) {
       var copy = jQuery.extend(true, {}, board);
       copy.togglePiece(thisRow, col);
       if (!copy.hasAnyQueensConflicts()) {
-        recurserFunction(copy, numPieces + 1, thisRow + 1);
+        if(recurserFunction(copy, numPieces + 1, thisRow + 1)) {
+          return true;
+        }
       }
       
     }
