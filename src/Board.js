@@ -154,8 +154,6 @@
         if (this._isInBounds(currentRowIndex, col)) {
           if (this.rows()[currentRowIndex][col] === 1) {
             numPieces++;
-            console.log("row: " + currentRowIndex);
-            console.log("col: " + col);
           } 
           currentRowIndex++;
         }
@@ -197,8 +195,6 @@
         if (this._isInBounds(currentRowIndex, col)) {
           if (this.rows()[currentRowIndex][col] === 1) {
             numPieces++;
-            console.log("row: " + currentRowIndex);
-            console.log("col: " + col);
           } 
           currentRowIndex++;
         }
