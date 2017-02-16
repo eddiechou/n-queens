@@ -16,8 +16,8 @@
 window.findNRooksSolution = function(n) {
   var solution = new Board({n: n});
 
-  function recurser(numPieces, thisRow) {
-    if (numPieces === n || thisRow == n) {
+  var recurser = function(numPieces, thisRow) {
+    if (numPieces === n || thisRow === n) {
       return true;
     } 
     //Iterate through each option;
@@ -33,7 +33,7 @@ window.findNRooksSolution = function(n) {
         }
       }
     }
-  }
+  };
   recurser(0, 0);
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution.rows();
@@ -44,13 +44,13 @@ window.countNRooksSolutions = function(n) {
   var solutionCount;
   var solution = new Board({n: n});
   
-  function recurserFunction(board, numPieces, thisRow) {
+  var recurserFunction = function(board, numPieces, thisRow) {
     if (numPieces === n) {
       solutionCount++;
       return;
     }
 
-    if (thisRow >= n){
+    if (thisRow >= n) {
       return;
     }
     // For each column of this row, check if toggle will work
@@ -61,18 +61,21 @@ window.countNRooksSolutions = function(n) {
         recurserFunction(copy, numPieces + 1, thisRow + 1);
       }
     }
-  }
+  };
 
+  // UNCOMMENT TO USE non-factorial method
   // recurserFunction(solution, 0, 0);
 
   // Factorial using memoization + recursion
   var factorials = [];
-  function factorial (n) {
-    if (n == 0 || n == 1)
+  var factorial = function(n) {
+    if (n === 0 || n === 1) {
       return 1;
-    if (factorials[n] > 0)
+    }
+    if (factorials[n] > 0) {
       return factorials[n];
-    return factorials[n] = factorial(n-1) * n;
+    }
+    return factorials[n] = factorial(n - 1) * n;
   };
 
   var solutionCount = factorial(n);
@@ -84,13 +87,13 @@ window.countNRooksSolutions = function(n) {
 window.findNQueensSolution = function(n) {
   var solution = new Board({n: n});
   
-  function recurserFunction(board, numPieces, thisRow) {
+  var recurserFunction = function(board, numPieces, thisRow) {
     if (numPieces === n) {
       solution = board;
       return true;
     }
 
-    if (thisRow >= n){
+    if (thisRow >= n) {
       return;
     }
     // For each column of this row, check if toggle will work
@@ -98,14 +101,13 @@ window.findNQueensSolution = function(n) {
       var copy = jQuery.extend(true, {}, board);
       copy.togglePiece(thisRow, col);
       if (!copy.hasAnyQueensConflicts()) {
-        if(recurserFunction(copy, numPieces + 1, thisRow + 1)) {
+        if (recurserFunction(copy, numPieces + 1, thisRow + 1)) {
           return true;
         }
       }
       
     }
-  }
-
+  };
   recurserFunction(solution, 0, 0);
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
@@ -117,12 +119,12 @@ window.countNQueensSolutions = function(n) {
   var solutionCount = 0;
   var solution = new Board({n: n});
   
-  function recurserFunction(board, numPieces, thisRow) {
+  var recurserFunction = function(board, numPieces, thisRow) {
     if (numPieces === n) {
       solutionCount++;
     }
 
-    if (thisRow >= n){
+    if (thisRow >= n) {
       return;
     }
     // For each column of this row, check if toggle will work
@@ -132,9 +134,8 @@ window.countNQueensSolutions = function(n) {
       if (!copy.hasAnyQueensConflicts()) {
         recurserFunction(copy, numPieces + 1, thisRow + 1);
       }
-      
     }
-  }
+  };
 
   recurserFunction(solution, 0, 0);
 

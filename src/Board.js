@@ -3,6 +3,13 @@
 // The only portions you need to work on are the helper functions (below)
 
 (function() {
+  var makeEmptyMatrix = function(n) {
+    return _(_.range(n)).map(function() {
+      return _(_.range(n)).map(function() {
+        return 0;
+      });
+    });
+  };
 
   window.Board = Backbone.Model.extend({
 
@@ -158,20 +165,18 @@
           currentRowIndex++;
         }
       }
-      
       return numPieces >= 2;        
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {     
-      var startingValue = -1 * (this.rows().length - 1)
+      var startingValue = -1 * (this.rows().length - 1);
       for (var a = startingValue; a < this.rows().length; a++) {
         if (this.hasMajorDiagonalConflictAt(a)) {
           return true;
         }
       } 
       return false;
-      
     },
 
 
@@ -205,27 +210,17 @@
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      var startingValue = (this.rows().length - 1) * 2
+      var startingValue = (this.rows().length - 1) * 2;
       for (var a = startingValue; a >= 0; a--) {
         if (this.hasMinorDiagonalConflictAt(a)) {
           return true;
         }
       } 
       return false;
-      
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
 
 
   });
-
-  var makeEmptyMatrix = function(n) {
-    return _(_.range(n)).map(function() {
-      return _(_.range(n)).map(function() {
-        return 0;
-      });
-    });
-  };
-
 }());
