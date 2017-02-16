@@ -51,30 +51,16 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
   var solution = new Board({n: n});
-  var boardsEncountered = [];
   
   function recurserFunction(board, numPieces) {
     if (numPieces === n) {
-      // If the current board is in the boardsEncountered don't add
-      var toAdd = true;
-      for (var a = 0; a < boardsEncountered.length; a++) {
-        if (sameBoard(boardsEncountered[a], board)) {
-          toAdd = false;
-          console.log("Encounterd the same Board!!")
-        }
-      }
-
-      if (toAdd) {
-        boardsEncountered.push(board);
-        solutionCount++;
-      }
+      solutionCount++;
     }
 
     if (numPieces > n) {
       return;
     }
 
-    // var   col = lastPieceCol;
     for (var row = 0; row < n; row++) {
       for (var col = 0; col < n; col++) {
         var copy = jQuery.extend(true, {}, board);
