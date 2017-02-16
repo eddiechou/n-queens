@@ -51,63 +51,47 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
   var solution = new Board({n: n});
-  var boards = [];
+  var boardsEncountered = [];
   
-  /*function recurser(board, numPieces) {
+  function recurserFunction(board, numPieces) {
     if (numPieces === n) {
-      solutionCount++;
-    } 
-
-    //Iterate through each option;
-    for (var row = 0; row < n; row++) {
-      for (var col = 0; col < n; col++) {
-        recurser(board, numPieces, row, col);
-        //Toggle and Check if valid
-        //If there is currently a piece at (row, col)
-        if (solution.rows()[row][col] === 1) {
-          continue;
-        } else {
-          solution.togglePiece(row, col);
-          if (solution.hasAnyRooksConflicts()) {
-            solution.togglePiece(row, col); //untoggle it            
-          } else { //no conflicts
-            recurser(solution, numPieces + 1);
-          }
+      // If the current board is in the boardsEncountered don't add
+      var toAdd = true;
+      for (var a = 0; a < boardsEncountered.length; a++) {
+        if (sameBoard(boardsEncountered[a], board)) {
+          toAdd = false;
+          console.log("Encounterd the same Board!!")
         }
       }
+
+      if (toAdd) {
+        boardsEncountered.push(board);
+        solutionCount++;
+      }
     }
-  }*/
-  function recurser(board, numPieces, lastPieceRow, lastPieceCol) {
-    if (numPieces === n) {
-      solutionCount++;
-    } 
 
-/*    if (numPieces > n) {
+    if (numPieces > n) {
       return;
-    }*/
+    }
 
-    var col = lastPieceCol;
-    for (var row = lastPieceRow; row < n; row++) {
-      for (; col < n; col++) {
+    // var   col = lastPieceCol;
+    for (var row = 0; row < n; row++) {
+      for (var col = 0; col < n; col++) {
         var copy = jQuery.extend(true, {}, board);
         if (copy.rows()[row][col] === 1) {  // if there's a piece already, try next one
           continue;
         } else {  // else try if it works
           copy.togglePiece(row, col);
           if (!copy.hasAnyRooksConflicts()) {
-            recurser(copy, numPieces + 1, row, col + 1);
+            recurserFunction(copy, numPieces + 1);
           }
         }
       }
-      col = 0;
-    }
+    } 
   }
  
-  recurser(solution, 0, 0, 0);
+  recurserFunction(solution, 0);
   
-  
-
-
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
@@ -126,4 +110,15 @@ window.countNQueensSolutions = function(n) {
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
+};
+
+window.sameBoard = function(board1, board2) {
+  for (var row = 0; row < board1.rows().length; row++) {
+    for (var col = 0; col < board2.rows().length; col++) {
+      if (board1.rows()[row][col] !== board2.rows()[row][col]) {
+        return false;
+      }
+    }
+  }
+  return true;
 };
