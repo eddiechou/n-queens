@@ -11,7 +11,7 @@
     });
   };
 
-  window.Board = Backbone.Model.extend({
+  self.Board = Backbone.Model.extend({
 
     initialize: function (params) {
       if (_.isUndefined(params) || _.isNull(params)) {

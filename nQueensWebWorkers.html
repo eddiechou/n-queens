@@ -1,0 +1,13 @@
+<output id="result"></output>
+
+<script>
+    var worker = new Worker('doNQueensWork.js');
+    var boardSize = 8;
+
+    worker.postMessage({'boardSize': '' + boardSize});
+    
+    worker.onmessage = function(e) {
+      var resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = resultDiv.innerHTML + '\n' + boardSize + '-Queens numSolutions: ' + e.data;
+    };
+</script>

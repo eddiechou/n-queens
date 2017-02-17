@@ -42,30 +42,7 @@ window.findNRooksSolution = function(n) {
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
   var solutionCount;
-  var solution = new Board({n: n});
   
-  var recurserFunction = function(board, numPieces, thisRow) {
-    if (numPieces === n) {
-      solutionCount++;
-      return;
-    }
-
-    if (thisRow >= n) {
-      return;
-    }
-    // For each column of this row, check if toggle will work
-    for (var col = 0; col < n; col++) {
-      var copy = jQuery.extend(true, {}, board);
-      copy.togglePiece(thisRow, col);
-      if (!copy.hasAnyRooksConflicts()) {
-        recurserFunction(copy, numPieces + 1, thisRow + 1);
-      }
-    }
-  };
-
-  // UNCOMMENT TO USE non-factorial method
-  // recurserFunction(solution, 0, 0);
-
   // Factorial using memoization + recursion
   var factorials = [];
   var factorial = function(n) {
@@ -86,28 +63,6 @@ window.countNRooksSolutions = function(n) {
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
   var solution = new Board({n: n});
-  
-  /*var recurserFunction = function(board, numPieces, thisRow) {
-    if (numPieces === n) {
-      solution = board;
-      return true;
-    }
-
-    if (thisRow >= n) {
-      return;
-    }
-    // For each column of this row, check if toggle will work
-    for (var col = 0; col < n; col++) {
-      var copy = jQuery.extend(true, {}, board);
-      copy.togglePiece(thisRow, col);
-      if (!copy.hasAnyQueensConflicts()) {
-        if (recurserFunction(copy, numPieces + 1, thisRow + 1)) {
-          return true;
-        }
-      }
-    }
-  };*/
-
 
   var recurserFunction = function(numPieces, thisRow) {
     if (numPieces === n) {
@@ -139,25 +94,6 @@ window.countNQueensSolutions = function(n) {
   var solutionCount = 0;
   var solution = new Board({n: n});
   
-  // using copy
-  /*var recurserFunction = function(board, numPieces, thisRow) {
-    if (numPieces === n) {
-      solutionCount++;
-    }
-
-    if (thisRow >= n) {
-      return;
-    }
-    // For each column of this row, check if toggle will work
-    for (var col = 0; col < n; col++) {
-      var copy = jQuery.extend(true, {}, board);
-      copy.togglePiece(thisRow, col);
-      if (!copy.hasAnyQueensConflicts()) {
-        recurserFunction(copy, numPieces + 1, thisRow + 1);
-      }
-    }
-  };*/
-
   // not using copy
   var recurserFunction = function(numPieces, thisRow) {
     if (numPieces === n) {
@@ -177,10 +113,58 @@ window.countNQueensSolutions = function(n) {
       solution.togglePiece(thisRow, col);
     }
   };
-  recurserFunction(0, 0);
 
-  //recurserFunction(solution, 0, 0);
+  var recurserFunctionInit = function(numPieces, thisRow) {
+    if (numPieces === n) {
+      solutionCount++;
+      return;
+    }
+
+    if (thisRow >= n) {
+      return;
+    }
+    // For each column of this row, check if toggle will work
+    colLimit = (n % 2 === 0) ? n / 2 : n;
+    for (var col = 0; col < colLimit; col++) {
+      solution.togglePiece(thisRow, col);
+      if (!solution.hasAnyQueensConflicts()) {
+        recurserFunction(numPieces + 1, thisRow + 1);
+      }
+      solution.togglePiece(thisRow, col);
+    }
+  };
+  recurserFunctionInit(0, 0);
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solutionCount;
+  if (n === 0) {
+    return 1;
+  }
+
+  // If n is even, we can just get the number of solutions for half the board and double the value
+  return n % 2 === 0 ? solutionCount * 2 : solutionCount;
 };
+
+
+/* 
+ * Using Web Workers instead
+ */
+
+// Todo: will need to change tests since result will return asynchronously
+window.countNQueensSolutionsAsync = function(n) {
+
+  var worker = new Worker('../doNQueensWork.js');
+  var boardSize = n;
+
+  worker.postMessage({'boardSize': '' + boardSize});
+  
+  worker.addEventListener('message', function(e) {
+    return e.data;
+  });
+};
+
+
+
+
+
+
+
